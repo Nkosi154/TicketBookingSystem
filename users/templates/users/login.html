@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Login - TicketFlow{% endblock %}
+
+{% block content %}
+<div style="max-width:440px; margin:0 auto;">
+    <div class="form-card">
+        <div style="text-align:center; margin-bottom:28px;">
+            <span style="font-size:36px;">◆</span>
+            <h2 style="margin-top:10px; margin-bottom:4px;">Welcome Back</h2>
+            <p class="subtitle">Login to your TicketFlow account</p>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-neon btn-full btn-lg" style="margin-top:10px;">
+                Login →
+            </button>
+        </form>
+        <p style="text-align:center; margin-top:20px; font-size:14px; color:var(--text-muted);">
+            Don't have an account?
+            <a href="{% url 'register' %}" style="color:var(--neon-green); font-weight:600;">Register</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

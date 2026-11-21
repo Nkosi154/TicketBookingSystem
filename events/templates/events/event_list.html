@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Upcoming Events: TicketFlow{% endblock %}
+
+{% block content %}
+    <h1 style="margin-bottom:25px;">Upcoming Events</h1>
+
+    {% if events %}
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap:20px;">
+            {% for event in events %}
+                <div style="background:white; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+                    {% if event.cover_image %}
+                        <img src="{{ event.cover_image.url }}" style="width:100%; height:180px; object-fit:cover;">
+                    {% else %}
+                        <div style="width:100%; height:180px; background:linear-gradient(135deg,#1a1a2e,#e94560); display:flex; align-items:center; justify-content:center;">
+                            <span style="color:white; font-size:40px;">🎟</span>
+                        </div>
+                    {% endif %}
+                    <div style="padding:20px;">
+                        <h2 style="font-size:18px; margin-bottom:8px;">{{ event.title }}</h2>
+                        <p style="color:#666; font-size:13px; margin-bottom:5px;">📍 {{ event.city }} | 📅 {{ event.date|date:"d M Y, H:i" }}</p>
+                        <p style="color:#e94560; font-weight:bold; font-size:18px; margin:10px 0;">R{{ event.price }}</p>
+                        <p style="color:#666; font-size:13px; margin-bottom:15px;">{{ event.tickets_remaining }} tickets left</p>
+                        {% if event.is_sold_out %}
+                            <button disabled style="width:100%; padding:10px; background:#ccc; border:none; border-radius:6px; color:#666;">Sold Out</button>
+                        {% else %}
+                            <a href="{% url 'event_detail' event.pk %}" style="display:block; text-align:center; background:#e94560; color:white; padding:10px; border-radius:6px; text-decoration:none; font-weight:500;">View Event</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align:center; padding:60px; background:white; border-radius:10px;">
+            <p style="font-size:40px;">🎟</p>
+            <h3>No events available right now</h3>
+            <p style="color:#666;">Check back soon!</p>
+        </div>
+    {% endif %}
+{% endblock %}

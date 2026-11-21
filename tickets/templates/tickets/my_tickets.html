@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}My Tickets - TicketFlow{% endblock %}
+
+{% block content %}
+<div class="section-header" style="margin-bottom:28px;">
+    <h2>My Tickets</h2>
+    <a href="{% url 'event_list' %}" class="btn btn-outline btn-sm">Browse More Events</a>
+</div>
+
+{% if tickets %}
+    <div style="display:grid; gap:14px;">
+        {% for ticket in tickets %}
+        <div style="background:var(--dark-card); border:1px solid var(--dark-border); border-radius:var(--radius-md); overflow:hidden; display:flex; transition:all 0.2s;"
+             onmouseover="this.style.borderColor='rgba(0,255,135,0.2)'"
+             onmouseout="this.style.borderColor='var(--dark-border)'">
+
+            <!-- Status bar -->
+            <div style="width:5px; flex-shrink:0; background:{% if ticket.status == 'active' %}var(--neon-green){% elif ticket.status == 'used' %}var(--text-muted){% else %}var(--neon-pink){% endif %};"></div>
+
+            <div style="padding:20px 24px; flex:1; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div>
+                    <h3 style="font-size:16px; color:var(--text-primary); margin-bottom:5px;">{{ ticket.event.title }}</h3>
+                    <p style="font-size:13px; color:var(--text-muted); margin-bottom:4px;">📍 {{ ticket.event.city }} &nbsp;·&nbsp; 📅 {{ ticket.event.date|date:"d M Y" }}</p>
+                    <p style="font-size:11px; font-family:monospace; color:var(--text-muted);">{{ ticket.ticket_id }}</p>
+                </div>
+                <div style="text-align:right; flex-shrink:0;">
+                    <p style="font-family:var(--font-display); font-size:20px; font-weight:800; color:var(--neon-green); margin-bottom:8px;">R{{ ticket.price_paid }}</p>
+                    <p style="margin-bottom:12px;">
+                        {% if ticket.status == 'active' %}
+                            <span class="pill pill-active">✅ Active</span>
+                        {% elif ticket.status == 'used' %}
+                            <span class="pill pill-used">✔ Used</span>
+                        {% else %}
+                            <span class="pill pill-cancelled">❌ Cancelled</span>
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'ticket_detail' ticket.pk %}" class="btn btn-ghost btn-sm">View QR Code →</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <span class="empty-icon">🎟</span>
+        <h3>No tickets yet</h3>
+        <p>Browse events and grab your first ticket</p>
+        <a href="{% url 'event_list' %}" class="btn btn-neon btn-lg">Browse Events</a>
+    </div>
+{% endif %}
+{% endblock %}

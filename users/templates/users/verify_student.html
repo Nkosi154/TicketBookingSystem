@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Verify Student: TicketFlow{% endblock %}
+
+{% block content %}
+<div style="max-width:480px; margin:0 auto;">
+    <div class="form-card">
+        <div style="text-align:center; margin-bottom:28px;">
+            <span style="font-size:40px;">🎓</span>
+            <h2 style="margin-top:12px; margin-bottom:4px;">Verify Student Status</h2>
+            <p class="subtitle">Enter your university email to unlock student discounts</p>
+        </div>
+
+        <div style="background:rgba(0,255,135,0.05); border:1px solid rgba(0,255,135,0.15); border-radius:var(--radius-sm); padding:14px 16px; margin-bottom:24px; font-size:13px; color:var(--text-secondary); line-height:1.6;">
+            ℹ We'll send a 6-digit code to your university inbox. You must have real access to that email to verify.
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <p>
+                <label>University Email Address</label>
+                <input type="email" name="student_email"
+                    placeholder="yourname@students.wits.ac.za"
+                    required>
+            </p>
+            <button type="submit" class="btn btn-neon btn-full btn-lg">
+                Send Verification Code →
+            </button>
+        </form>
+
+        <p style="margin-top:20px; font-size:13px; color:var(--text-muted); text-align:center;">
+            Supported: UMP,UWC,Wits, UCT, UP, UJ, UKZN, Stellenbosch, UNISA, NWU, TUT, CPUT, DUT + more
+        </p>
+    </div>
+</div>
+{% endblock %}

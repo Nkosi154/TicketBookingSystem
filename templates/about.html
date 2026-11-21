@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block title %}About Us - TicketFlow{% endblock %}
+
+{% block content %}
+
+<!-- Page header -->
+<div style="text-align:center; margin-bottom:60px;">
+    <span class="hero-tag">Who We Are</span>
+    <h1 style="margin-top:16px; margin-bottom:16px;">Built for <span style="background:linear-gradient(90deg,var(--neon-green),var(--neon-blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;">the culture</span></h1>
+    <p style="font-size:18px; max-width:560px; margin:0 auto; line-height:1.7;">TicketFlow is South Africa's vibrant ticket platform — connecting event organisers with audiences across the country.</p>
+</div>
+
+<!-- Mission cards -->
+<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; margin-bottom:60px;">
+    <div class="card" style="padding:30px;">
+        <div style="font-size:36px; margin-bottom:16px;">🎯</div>
+        <h3 style="color:var(--text-primary); margin-bottom:10px;">Our Mission</h3>
+        <p style="font-size:15px; line-height:1.7;">To make event ticketing simple, secure, and accessible for everyone — from massive festivals to intimate student events.</p>
+    </div>
+    <div class="card" style="padding:30px;">
+        <div style="font-size:36px; margin-bottom:16px;">🎓</div>
+        <h3 style="color:var(--text-primary); margin-bottom:10px;">Student First</h3>
+        <p style="font-size:15px; line-height:1.7;">We built student discount verification from the ground up. Verified students get exclusive promo codes from participating events.</p>
+    </div>
+    <div class="card" style="padding:30px;">
+        <div style="font-size:36px; margin-bottom:16px;">🔒</div>
+        <h3 style="color:var(--text-primary); margin-bottom:10px;">Secure Ticketing</h3>
+        <p style="font-size:15px; line-height:1.7;">Every ticket gets a unique UUID and QR code. Organisers scan at the door — no fakes, no duplicates, no stress.</p>
+    </div>
+</div>
+
+<!-- Stats banner -->
+<div style="background:var(--dark-card); border:1px solid var(--dark-border); border-radius:var(--radius-lg); padding:40px; display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:30px; text-align:center; margin-bottom:60px;">
+    <div>
+        <p style="font-family:var(--font-display); font-size:40px; font-weight:800; color:var(--neon-green); line-height:1;">100+</p>
+        <p style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px; margin-top:8px;">Events Listed</p>
+    </div>
+    <div>
+        <p style="font-family:var(--font-display); font-size:40px; font-weight:800; color:var(--neon-blue); line-height:1;">29</p>
+        <p style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px; margin-top:8px;">Universities Supported</p>
+    </div>
+    <div>
+        <p style="font-family:var(--font-display); font-size:40px; font-weight:800; color:var(--neon-pink); line-height:1;">QR</p>
+        <p style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px; margin-top:8px;">Instant Entry</p>
+    </div>
+    <div>
+        <p style="font-family:var(--font-display); font-size:40px; font-weight:800; color:var(--neon-yellow); line-height:1;">R0</p>
+        <p style="font-size:13px; text-transform:uppercase; letter-spacing:0.5px; margin-top:8px;">Hidden Fees for Buyers</p>
+    </div>
+</div>
+
+<!-- Organizer CTA -->
+<div style="background:linear-gradient(135deg,#0d1117,#0d2137); border:1px solid var(--dark-border); border-radius:var(--radius-lg); padding:50px; text-align:center; position:relative; overflow:hidden;">
+    <div style="position:absolute; inset:0; background:radial-gradient(circle at 30% 50%, rgba(0,255,135,0.06), transparent 60%), radial-gradient(circle at 70% 50%, rgba(0,212,255,0.05), transparent 60%);"></div>
+    <div style="position:relative; z-index:1;">
+        <h2 style="margin-bottom:12px;">Want to sell tickets on TicketFlow?</h2>
+        <p style="margin-bottom:28px; font-size:16px;">Join hundreds of event organisers. Simple pricing — monthly subscription plus a small commission per ticket sold.</p>
+        <div style="display:flex; gap:14px; justify-content:center; flex-wrap:wrap;">
+            <a href="{% url 'register' %}" class="btn btn-neon btn-lg">Get Started</a>
+            <a href="{% url 'contact' %}" class="btn btn-outline btn-lg">Talk to Us</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

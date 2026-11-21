@@ -1,0 +1,36 @@
+VALID_STUDENT_DOMAINS = [
+    'students.wits.ac.za',
+    'student.wits.ac.za',
+    'students.uct.ac.za',
+    'myuct.ac.za',
+    'sun.ac.za',
+    'stud.sun.ac.za',
+    'students.up.ac.za',
+    'tuks.co.za',
+    'student.uj.ac.za',
+    'students.uj.ac.za',
+    'dut4life.ac.za',
+    'stu.ukzn.ac.za',
+    'student.ukzn.ac.za',
+    'nwu.ac.za',
+    'students.nwu.ac.za',
+    'unisa.ac.za',
+    'cut.ac.za',
+    'ufh.ac.za',
+    'univen.ac.za',
+    'ul.ac.za',
+    'wsu.ac.za',
+    'cput.ac.za',
+    'tut.ac.za',
+    'vut.ac.za',
+    'mut.ac.za',
+    'ru.ac.za',
+    'students.ru.ac.za',
+    'ump.ac.za',
+    'student.ufs.ac.za',
+    'uwc.ac.za',
+]
+
+def is_valid_student_domain(email):
+    domain = email.split('@')[-1].lower()
+    return domain in VALID_STUDENT_DOMAINS

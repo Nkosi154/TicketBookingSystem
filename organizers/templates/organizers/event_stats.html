@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.title }} Stats - TicketFlow{% endblock %}
+
+{% block content %}
+<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:30px; flex-wrap:wrap; gap:15px;">
+    <div>
+        <h2 style="margin-bottom:4px;">{{ event.title }}</h2>
+        <p style="font-size:14px;">📍 {{ event.venue }}, {{ event.city }} &nbsp;·&nbsp; 📅 {{ event.date|date:"d M Y, H:i" }}</p>
+    </div>
+    <a href="{% url 'dashboard' %}" class="btn btn-ghost btn-sm">← Dashboard</a>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-box pink">
+        <p class="label">Revenue</p>
+        <p class="value">R{{ revenue }}</p>
+    </div>
+    <div class="stat-box blue">
+        <p class="label">Sold</p>
+        <p class="value">{{ tickets_sold }}</p>
+    </div>
+    <div class="stat-box green">
+        <p class="label">Checked In</p>
+        <p class="value">{{ tickets_used }}</p>
+    </div>
+    <div class="stat-box yellow">
+        <p class="label">Remaining</p>
+        <p class="value">{{ event.tickets_remaining }}</p>
+    </div>
+</div>
+
+<!-- Discount Codes -->
+<div class="section-header" style="margin-bottom:16px;">
+    <h3>Discount Codes</h3>
+    <a href="{% url 'create_discount_code' event.pk %}" class="btn btn-outline btn-sm">+ Create Code</a>
+</div>
+
+{% if discount_codes %}
+<div style="background:var(--dark-card); border:1px solid var(--dark-border); border-radius:var(--radius-md); overflow:hidden; margin-bottom:35px;">
+    <table class="tf-table">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Discount</th>
+                <th>Students Only</th>
+                <th>Used / Max</th>
+                <th>Expires</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for code in discount_codes %}
+            <tr>
+                <td><strong style="color:var(--neon-green); font-family:monospace;">{{ code.code }}</strong></td>
+                <td>{% if code.discount_type == 'percentage' %}{{ code.value }}%{% else %}R{{ code.value }}{% endif %}</td>
+                <td>{% if code.students_only %}<span class="pill pill-active">Yes</span>{% else %}<span class="pill pill-used">No</span>{% endif %}</td>
+                <td>{{ code.times_used }} / {{ code.max_uses }}</td>
+                <td>{{ code.valid_until|date:"d M Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p style="color:var(--text-muted); font-size:14px; margin-bottom:35px;">No discount codes yet.</p>
+{% endif %}
+
+<!-- Buyers -->
+<div class="section-header" style="margin-bottom:16px;">
+    <h3>Ticket Buyers <span style="color:var(--text-muted); font-size:14px; font-weight:400;">({{ tickets_sold }})</span></h3>
+</div>
+
+{% if tickets %}
+<div style="background:var(--dark-card); border:1px solid var(--dark-border); border-radius:var(--radius-md); overflow:hidden;">
+    <table class="tf-table">
+        <thead>
+            <tr>
+                <th>Buyer</th>
+                <th>Ticket ID</th>
+                <th>Paid</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+            <tr>
+                <td style="color:var(--text-primary); font-weight:500;">{{ ticket.buyer.username }}</td>
+                <td><span style="font-family:monospace; font-size:11px;">{{ ticket.ticket_id|truncatechars:20 }}</span></td>
+                <td style="color:var(--neon-green); font-weight:600;">R{{ ticket.price_paid }}</td>
+                <td>
+                    {% if ticket.status == 'active' %}
+                        <span class="pill pill-active">Active</span>
+                    {% elif ticket.status == 'used' %}
+                        <span class="pill pill-used">Used</span>
+                    {% else %}
+                        <span class="pill pill-cancelled">Cancelled</span>
+                    {% endif %}
+                </td>
+                <td>{{ ticket.purchased_at|date:"d M Y, H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p style="color:var(--text-muted); font-size:14px;">No tickets sold yet.</p>
+{% endif %}
+{% endblock %}

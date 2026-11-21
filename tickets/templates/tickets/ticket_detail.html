@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Your Ticket - {{ ticket.event.title }}{% endblock %}
+
+{% block content %}
+<div class="ticket-card">
+
+    <!-- Header -->
+    <div class="ticket-header">
+        <span class="ticket-icon">🎟</span>
+        <h2 style="color:var(--text-primary); font-size:22px; margin-bottom:6px;">{{ ticket.event.title }}</h2>
+        <p style="color:var(--text-muted); font-size:14px;">{{ ticket.event.date|date:"l, d F Y \a\t H:i" }}</p>
+    </div>
+
+    <!-- Notch divider -->
+    <div class="ticket-notch">
+        <div class="ticket-notch-line"></div>
+    </div>
+
+    <div class="ticket-body">
+
+        <!-- Fields -->
+        <div class="ticket-row">
+            <div class="ticket-field">
+                <p class="tf-label">Venue</p>
+                <p class="tf-value">{{ ticket.event.venue }}, {{ ticket.event.city }}</p>
+            </div>
+            <div class="ticket-field" style="text-align:right;">
+                <p class="tf-label">Status</p>
+                <p class="tf-value">
+                    {% if ticket.status == 'active' %}
+                        <span class="pill pill-active">✅ Active</span>
+                    {% elif ticket.status == 'used' %}
+                        <span class="pill pill-used">✔ Used</span>
+                    {% else %}
+                        <span class="pill pill-cancelled">❌ Cancelled</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <div class="ticket-row">
+            <div class="ticket-field">
+                <p class="tf-label">Price Paid</p>
+                <p class="tf-value text-green" style="font-size:20px; font-family:var(--font-display);">R{{ ticket.price_paid }}</p>
+            </div>
+            <div class="ticket-field" style="text-align:right;">
+                <p class="tf-label">Purchased</p>
+                <p class="tf-value" style="font-size:13px;">{{ ticket.purchased_at|date:"d M Y" }}</p>
+            </div>
+        </div>
+
+        <!-- Ticket ID -->
+        <div class="ticket-id-box">
+            <p class="tf-label">Ticket ID</p>
+            <code>{{ ticket.ticket_id }}</code>
+        </div>
+
+        <!-- QR Code -->
+        {% if ticket.qr_code %}
+        <div class="qr-container">
+            <img src="{{ ticket.qr_code.url }}" alt="QR Code" width="200" height="200">
+            <p class="qr-caption">📱 Show this at the door for entry</p>
+        </div>
+        {% endif %}
+
+        <!-- Actions -->
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <a href="{% url 'my_tickets' %}" class="btn btn-ghost" style="flex:1; justify-content:center;">← My Tickets</a>
+            <a href="{% url 'event_list' %}" class="btn btn-outline" style="flex:1; justify-content:center;">Browse Events</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

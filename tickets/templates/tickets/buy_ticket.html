@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Buy Ticket - {{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="buy-card">
+    <div class="buy-header">
+        <p style="font-size:11px; text-transform:uppercase; letter-spacing:1px; color:var(--neon-green); margin-bottom:8px; font-weight:600;">Purchase Ticket</p>
+        <h2>{{ event.title }}</h2>
+        <p>📍 {{ event.venue }}, {{ event.city }} &nbsp;·&nbsp; 📅 {{ event.date|date:"d M Y, H:i" }}</p>
+    </div>
+
+    <div class="buy-body">
+        <!-- Price display -->
+        <div class="price-display">
+            <div class="price-original">
+                <p class="pd-label">Original Price</p>
+                <p class="pd-value">R{{ event.price }}</p>
+            </div>
+            {% if discount %}
+            <div style="text-align:center;">
+                <p style="font-size:22px;">→</p>
+            </div>
+            <div class="price-final">
+                <p class="pd-label">You Pay</p>
+                <p class="pd-value">R{{ final_price }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Alert messages -->
+        {% if discount_message %}
+        <div class="alert-box {% if discount %}alert-success{% else %}alert-error{% endif %}" style="margin-bottom:20px;">
+            {% if discount %}✅{% else %}❌{% endif %} {{ discount_message }}
+        </div>
+        {% endif %}
+
+        <!-- Discount code -->
+        {% if not discount %}
+        <div class="code-form">
+            <label>Have a Discount Code?</label>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="apply_code">
+                <div class="code-input-row">
+                    <input type="text" name="discount_code" placeholder="e.g. STUDENT20">
+                    <button type="submit" class="btn btn-outline">Apply</button>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <div class="discount-applied">
+            <span>🏷 {{ discount.code }} applied</span>
+            <span style="color:var(--neon-green); font-size:13px;">Save R{{ event.price|floatformat:2 }}</span>
+        </div>
+        {% endif %}
+
+        <!-- Confirm purchase -->
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="confirm_purchase">
+            {% if discount %}
+                <input type="hidden" name="discount_code_id" value="{{ discount.pk }}">
+            {% endif %}
+            <div class="confirm-summary">
+                Purchasing <strong>1 ticket</strong> for <strong>R{{ final_price }}</strong>
+            </div>
+            <button type="submit" class="btn btn-neon btn-full btn-lg">
+                Confirm Purchase →
+            </button>
+        </form>
+
+        <a href="{% url 'event_detail' event.pk %}"
+           style="display:block; text-align:center; margin-top:16px; font-size:13px; color:var(--text-muted);">
+            ← Back to event
+        </a>
+    </div>
+</div>
+{% endblock %}

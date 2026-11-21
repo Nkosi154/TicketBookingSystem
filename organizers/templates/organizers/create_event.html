@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Create Event - TicketFlow{% endblock %}
+
+{% block content %}
+<div style="max-width:640px; margin:0 auto;">
+    <div style="margin-bottom:28px;">
+        <h2 style="margin-bottom:4px;">Create New Event</h2>
+        <p>Fill in your event details. Save as draft until you're ready to publish.</p>
+    </div>
+    <div class="form-card">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div style="display:flex; gap:12px; margin-top:16px;">
+                <button type="submit" class="btn btn-neon btn-lg" style="flex:1;">Create Event →</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-ghost btn-lg" style="flex:1; justify-content:center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Enter Code - TicketFlow{% endblock %}
+
+{% block content %}
+<div style="max-width:400px; margin:0 auto;">
+    <div class="form-card" style="text-align:center;">
+        <span style="font-size:40px;">📬</span>
+        <h2 style="margin-top:12px; margin-bottom:4px;">Check Your Inbox</h2>
+        <p class="subtitle">Enter the 6-digit code we sent to your university email</p>
+
+        <form method="POST" style="margin-top:28px;">
+            {% csrf_token %}
+            <input type="text" name="code"
+                placeholder="000000"
+                maxlength="6"
+                style="width:100%; padding:18px; background:var(--dark-bg);
+                       border:1px solid var(--dark-border); border-radius:var(--radius-sm);
+                       color:var(--neon-green); font-size:36px; font-family:monospace;
+                       letter-spacing:12px; text-align:center; outline:none;
+                       margin-bottom:20px;"
+                autofocus>
+            <button type="submit" class="btn btn-neon btn-full btn-lg">
+                Confirm & Activate Student Status ✓
+            </button>
+        </form>
+
+        <p style="margin-top:20px; font-size:13px; color:var(--text-muted);">
+            Didn't receive it?
+            <a href="{% url 'verify_student' %}" style="color:var(--neon-green);">Try again</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

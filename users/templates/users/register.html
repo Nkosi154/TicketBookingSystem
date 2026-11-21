@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Register - TicketFlow{% endblock %}
+
+{% block content %}
+<div style="max-width:480px; margin:0 auto;">
+    <div class="form-card">
+        <div style="text-align:center; margin-bottom:28px;">
+            <span style="font-size:36px;">🎟</span>
+            <h2 style="margin-top:10px; margin-bottom:4px;">Create Account</h2>
+            <p class="subtitle">Join TicketFlow and start buying tickets</p>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-neon btn-full btn-lg" style="margin-top:10px;">
+                Create Account →
+            </button>
+        </form>
+        <p style="text-align:center; margin-top:20px; font-size:14px; color:var(--text-muted);">
+            Already have an account?
+            <a href="{% url 'login' %}" style="color:var(--neon-green); font-weight:600;">Login</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

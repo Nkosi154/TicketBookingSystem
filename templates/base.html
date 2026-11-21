@@ -1,0 +1,139 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TicketFlow{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+    <a href="{% url 'event_list' %}" class="nav-brand">
+        Ticket<span class="accent">Flow</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="{% url 'event_list' %}">🎟 Events</a>
+        <a href="{% url 'about' %}">About</a>
+        <a href="{% url 'contact' %}">Contact</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'my_tickets' %}">My Tickets</a>
+
+            {% if user.is_staff or user.events.exists %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'create_event' %}" class="btn btn-outline">+ Event</a>
+                <a href="{% url 'validate_ticket' %}" class="btn btn-ghost">🔍 Scanner</a>
+            {% endif %}
+
+            {% if not user.student_verified and not user.is_staff %}
+                <a href="{% url 'verify_student' %}" class="btn btn-ghost" style="color:var(--neon-yellow);">🎓 Verify Student</a>
+            {% endif %}
+
+            <span class="nav-user">
+                Hi, {{ user.username }}
+                {% if user.student_verified %}
+                    <span class="badge-student">Student</span>
+                {% endif %}
+            </span>
+            <a href="{% url 'logout' %}" class="btn btn-ghost">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-neon">Register</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- FLASH MESSAGES -->
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- HERO — guests only -->
+{% if not user.is_authenticated and request.resolver_match.url_name == 'event_list' %}
+<div class="hero">
+    <div class="hero-content">
+        <span class="hero-tag">🇿🇦 South Africa's Ticket Platform</span>
+        <h1>Find Your Next<br><span class="highlight">Experience</span></h1>
+        <p>Buy tickets to the hottest events. Student discounts available with verified university email.</p>
+        <div class="hero-btns">
+            <a href="{% url 'event_list' %}" class="btn btn-neon btn-lg">Browse Events</a>
+            <a href="{% url 'register' %}" class="btn btn-outline btn-lg">Create Account</a>
+        </div>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <p>100+</p>
+                <p>Events</p>
+            </div>
+            <div class="hero-stat">
+                <p>R0</p>
+                <p>Hidden Fees</p>
+            </div>
+            <div class="hero-stat">
+                <p>QR</p>
+                <p>Instant Entry</p>
+            </div>
+            <div class="hero-stat">
+                <p>🎓</p>
+                <p>Student Deals</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- PAGE CONTENT -->
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div style="max-width:1100px; margin:0 auto; display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:40px; padding:40px 20px; text-align:left; border-bottom:1px solid var(--dark-border);">
+        <div>
+            <p style="font-family:var(--font-display); font-size:20px; font-weight:800; color:var(--text-primary); margin-bottom:10px;">Ticket<span style="color:var(--neon-green);">Flow</span></p>
+            <p style="font-size:13px; line-height:1.7;">South Africa's vibrant ticket platform. Built for events, built for people.</p>
+        </div>
+        <div>
+            <p style="color:var(--text-primary); font-weight:600; margin-bottom:12px; font-size:14px;">Platform</p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <a href="{% url 'event_list' %}" style="color:var(--text-muted); font-size:13px;">Browse Events</a>
+                <a href="{% url 'register' %}" style="color:var(--text-muted); font-size:13px;">Create Account</a>
+                <a href="{% url 'about' %}" style="color:var(--text-muted); font-size:13px;">About Us</a>
+            </div>
+        </div>
+        <div>
+            <p style="color:var(--text-primary); font-weight:600; margin-bottom:12px; font-size:14px;">Organizers</p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <a href="{% url 'register' %}" style="color:var(--text-muted); font-size:13px;">List Your Event</a>
+                <a href="{% url 'dashboard' %}" style="color:var(--text-muted); font-size:13px;">Dashboard</a>
+                <a href="{% url 'contact' %}" style="color:var(--text-muted); font-size:13px;">Contact Us</a>
+            </div>
+        </div>
+        <div>
+            <p style="color:var(--text-primary); font-weight:600; margin-bottom:12px; font-size:14px;">Students</p>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <a href="{% url 'verify_student' %}" style="color:var(--text-muted); font-size:13px;">Verify Student Status</a>
+                <a href="{% url 'event_list' %}" style="color:var(--text-muted); font-size:13px;">Student Deals</a>
+            </div>
+        </div>
+    </div>
+    <div style="padding:20px; text-align:center;">
+        <p>© 2026 <span class="accent">TicketFlow</span>   All rights reserved. Built in 🇿🇦</p>
+    </div>
+</footer>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

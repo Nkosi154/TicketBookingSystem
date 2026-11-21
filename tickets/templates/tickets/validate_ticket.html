@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Ticket Scanner - TicketFlow{% endblock %}
+
+{% block content %}
+<div class="scanner-wrap">
+
+    <div style="margin-bottom:24px;">
+        <h2 style="margin-bottom:4px;">🔍 Ticket Scanner</h2>
+        <p>Point the camera at a ticket QR code to validate entry.</p>
+    </div>
+
+    <!-- Camera card -->
+    <div class="scanner-card" style="margin-bottom:16px;">
+        <div class="scanner-video-wrap" id="video-wrap" style="display:none;">
+            <video id="video" autoplay playsinline></video>
+            <div class="scan-line" id="scan-line"></div>
+            <div class="scan-corners"></div>
+        </div>
+        <div class="scanner-card-body">
+            <button id="start-btn" onclick="startCamera()" class="btn btn-neon btn-full btn-lg">
+                📷 Open Camera to Scan
+            </button>
+            <button id="capture-btn" onclick="captureAndSend()" class="btn btn-pink btn-full btn-lg" style="display:none; margin-top:10px;">
+                📸 Capture QR Code
+            </button>
+            <p id="status" style="text-align:center; color:var(--text-muted); font-size:13px; margin-top:12px;"></p>
+        </div>
+    </div>
+
+    <form id="scan-form" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="qr_image" id="qr-input" style="display:none;" accept="image/*">
+    </form>
+
+    <!-- Manual fallback -->
+    <details style="margin-bottom:20px;">
+        <summary style="cursor:pointer; color:var(--neon-blue); font-size:14px; font-weight:500; padding:14px 18px; background:var(--dark-card); border:1px solid var(--dark-border); border-radius:var(--radius-md); list-style:none;">
+            ⌨ Enter ticket ID manually instead
+        </summary>
+        <div style="background:var(--dark-card); border:1px solid var(--dark-border); border-top:none; border-radius:0 0 var(--radius-md) var(--radius-md); padding:20px;">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="text" name="ticket_id"
+                    placeholder="Paste UUID here..."
+                    style="width:100%; padding:12px 16px; background:var(--dark-bg); border:1px solid var(--dark-border); border-radius:var(--radius-sm); color:var(--text-primary); font-size:14px; font-family:monospace; outline:none; margin-bottom:12px; box-sizing:border-box;">
+                <button type="submit" class="btn btn-ghost btn-full">Validate →</button>
+            </form>
+        </div>
+    </details>
+
+    <!-- Error -->
+    {% if error %}
+    <div class="result-invalid" style="margin-bottom:16px;">
+        <h3>❌ Invalid Ticket</h3>
+        <p>{{ error }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Valid ticket -->
+    {% if ticket %}
+    <div class="result-valid">
+        <div class="result-valid-header">✅ Valid Ticket — Allow Entry</div>
+        <div class="result-grid">
+            <div class="result-field">
+                <p class="rf-label">Event</p>
+                <p class="rf-value">{{ ticket.event.title }}</p>
+            </div>
+            <div class="result-field">
+                <p class="rf-label">Date</p>
+                <p class="rf-value">{{ ticket.event.date|date:"d M Y" }}</p>
+            </div>
+            <div class="result-field">
+                <p class="rf-label">Buyer</p>
+                <p class="rf-value">{{ ticket.buyer.username }}</p>
+            </div>
+            <div class="result-field">
+                <p class="rf-label">Price Paid</p>
+                <p class="rf-value text-green">R{{ ticket.price_paid }}</p>
+            </div>
+        </div>
+        <div style="padding:0 20px 20px;">
+            <p style="font-size:11px; font-family:monospace; color:var(--text-muted); background:var(--dark-bg); padding:10px; border-radius:var(--radius-sm); margin-bottom:16px; word-break:break-all;">{{ ticket.ticket_id }}</p>
+            <form method="POST" action="{% url 'mark_ticket_used' ticket.ticket_id %}">
+                {% csrf_token %}
+                <button type="submit"
+                    onclick="return confirm('Allow entry and mark this ticket as used?')"
+                    class="btn btn-neon btn-full btn-lg">
+                    ✅ Allow Entry — Mark as Used
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+    let stream = null;
+    function startCamera() {
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(function(s) {
+            stream = s;
+            let video = document.getElementById('video');
+            video.srcObject = stream;
+            document.getElementById('video-wrap').style.display = 'block';
+            document.getElementById('start-btn').style.display = 'none';
+            document.getElementById('capture-btn').style.display = 'flex';
+            document.getElementById('status').textContent = 'Point at the QR code then tap Capture';
+        })
+        .catch(function(err) {
+            document.getElementById('status').textContent = '❌ Camera error: ' + err.message;
+        });
+    }
+    function captureAndSend() {
+        let video = document.getElementById('video');
+        let canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        stream.getTracks().forEach(t => t.stop());
+        document.getElementById('status').textContent = 'Processing...';
+        canvas.toBlob(function(blob) {
+            let file = new File([blob], 'scan.png', { type: 'image/png' });
+            let dt = new DataTransfer();
+            dt.items.add(file);
+            document.getElementById('qr-input').files = dt.files;
+            document.getElementById('scan-form').submit();
+        }, 'image/png');
+    }
+</script>
+{% endblock %}

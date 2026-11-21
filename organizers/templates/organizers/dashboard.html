@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - TicketFlow{% endblock %}
+
+{% block content %}
+<div class="dash-header">
+    <div>
+        <h2 style="margin-bottom:4px;">Hey, {{ request.user.username }} 👋</h2>
+        <p style="font-size:14px;">Manage your events and track performance</p>
+    </div>
+    <a href="{% url 'create_event' %}" class="btn btn-neon">+ Create Event</a>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+    <div class="stat-box green">
+        <p class="label">Total Revenue</p>
+        <p class="value">R{{ total_revenue }}</p>
+    </div>
+    <div class="stat-box blue">
+        <p class="label">Tickets Sold</p>
+        <p class="value">{{ total_tickets_sold }}</p>
+    </div>
+    <div class="stat-box white">
+        <p class="label">Total Events</p>
+        <p class="value">{{ events|length }}</p>
+    </div>
+</div>
+
+<!-- Events -->
+<div class="section-header">
+    <h3>Your Events</h3>
+    <a href="{% url 'validate_ticket' %}" class="btn btn-ghost btn-sm">🔍 Open Scanner</a>
+</div>
+
+{% if events %}
+    {% for event in events %}
+    <div class="event-row">
+        <div class="event-row-left">
+            <h3>{{ event.title }}</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:6px;">📍 {{ event.city }} &nbsp;·&nbsp; 📅 {{ event.date|date:"d M Y, H:i" }}</p>
+            <span class="pill {% if event.status == 'published' %}pill-published{% elif event.status == 'draft' %}pill-draft{% else %}pill-cancelled{% endif %}">
+                {{ event.get_status_display }}
+            </span>
+        </div>
+        <div class="event-row-right">
+            <p class="event-price">R{{ event.price }}/ticket</p>
+            <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">{{ event.tickets_remaining }}/{{ event.total_tickets }} remaining</p>
+            <a href="{% url 'event_stats' event.pk %}" class="btn btn-ghost btn-sm">View Stats →</a>
+        </div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="empty-state">
+        <span class="empty-icon">🎪</span>
+        <h3>No events yet</h3>
+        <p>Create your first event and start selling tickets</p>
+        <a href="{% url 'create_event' %}" class="btn btn-neon btn-lg">+ Create Event</a>
+    </div>
+{% endif %}
+{% endblock %}
